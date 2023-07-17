@@ -82,10 +82,12 @@ const updateReview = async (req, res) => {
 
 
     if(!mongoose.Types.ObjectId.isValid(id)){
-        return res.status(404).json({error: 'No Revies Found'})
+        return res.status(404).json({error: 'No Reviews Found'})
     }
 
-    const review = await Review.findOneAndDelete({_id: id})
+    const review = await Review.findOneAndUpdate({_id: id}, {
+        ...req.body
+    })
 
     if(!review){
         return res.status(404).json({error: 'Review Not Found'})
@@ -99,5 +101,6 @@ module.exports = {
     getReviews,
     getReview,
     createReview,
-    deleteReview
+    deleteReview,
+    updateReview
 }

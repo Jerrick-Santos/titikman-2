@@ -2,13 +2,14 @@ const express = require('express')
 
 const {     getReview,
             getReviews,
-            createResto,
-            createReview} = require('../controllers/reviewController')
+            createReview,
+            deleteReview, 
+            updateReview} = require('../controllers/reviewController')
 
 const router = express.Router()
 
 
-//Get all Restaurants 
+//Get all reviews 
 router.get('/', getReviews)
 
 //Get a single Restaurant
@@ -17,15 +18,10 @@ router.get('/:id', getReview)
 //Post a review 
 router.post('/', createReview)
 
-
 //Delete a review 
-router.delete('/:id', (req, res) => {
-    res.json({mssg: 'DELETE a Resto'})
-})
+router.delete('/:id', deleteReview)
 
 //UPDATE a review 
-router.patch('/:id', (req, res) => {
-    res.json({mssg: 'UPDATE a Resto'})
-})
+router.patch('/:id', updateReview)
 
 module.exports = router
