@@ -2,6 +2,7 @@ require('dotenv').config()
 const express = require('express')
 const RestoRoutes = require('./routes/resto')
 const ReviewRoutes = require('./routes/review')
+const ImageRoutes = require('./routes/image')
 
 //express app
 const app = express()
@@ -22,6 +23,13 @@ app.use(express.json())
 //routes
 app.use('/api/home',RestoRoutes)
 app.use('/api/reviews', ReviewRoutes)
+// app.use('/images/thumbnail', express.static('images/thumbnail'))
+app.use('/images/thumbnail/:imageName', async (req, res) => {
+    const imageName = req.params.imageName;
+    const imagePath = `${__dirname}/images/thumbnail/${imageName}`;
+
+    res.sendFile(imagePath)
+})
 
 
 //db connection

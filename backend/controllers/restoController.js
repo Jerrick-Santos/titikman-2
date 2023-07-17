@@ -3,9 +3,12 @@ const Review = require('../models/ReviewModel')
 const Resto = require('../models/RestoModel')
 
 
+
 //get all restos 
 const getRestos = async (req, res) => {
     const restos = await Resto.find({}).sort({createdAt: -1})
+
+
     res.status(200).json(restos)
 }
 
@@ -26,25 +29,25 @@ const getResto = async (req, res) => {
 const createResto = async (req, res) => {
     const {
             restoName, 
+            thumbnail,
             avgRating, 
-            assets, 
             description, 
             restoUrl, 
             operatingHours, 
             contactNum, 
-            menuImgs} = req.body
+        } = req.body
+
 
     //add doc to db
     try{
         const resto = await Resto.create({
             restoName, 
+            thumbnail,
             avgRating, 
-            assets, 
             description, 
             restoUrl, 
             operatingHours, 
             contactNum, 
-            menuImgs
         })
         res.status(200).json(resto)
     }catch(error){

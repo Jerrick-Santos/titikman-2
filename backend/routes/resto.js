@@ -13,6 +13,9 @@ router.get('/', getRestos)
 //Get a single Restaurant
 router.get('/:id', getResto)
 
+//get a Thumbnail 
+router.get('/:imgageName')
+
 //Post a review 
 router.post('/', createResto)
 
