@@ -7,6 +7,10 @@ const reviewSchema = new Schema({
         type: String,
         required: true
     }, 
+    userProfilePic:{
+        type: Buffer,
+        required: true
+    }, 
     datePosted:{
         type: Date,
         required: true
@@ -30,6 +34,18 @@ const reviewSchema = new Schema({
     dislikes: {
         type: Number, 
         require: true
+    },
+    hasOwnerResponse: {
+        type: Boolean, 
+        require: true
+    },
+    responseDatePosted: {
+        type: Number, 
+        require: false
+    },
+    responseContent: {
+        type: String, 
+        require: false
     }
 }, {timestamps: true}) 
 
