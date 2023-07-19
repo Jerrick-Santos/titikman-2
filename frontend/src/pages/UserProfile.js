@@ -14,22 +14,11 @@ const Profile = (props) => {
           <div className="col-sm-6">
             <div className="profile-container">
               <div className="profile-icon">
-                <img src={caloy} alt="Profile Picture" />
+                <img src={props.userImg} alt="Profile Picture" />
               </div>
-              <h3 className="profile-name">props.username</h3>
+              <h3 className="profile-name">{props.username}</h3>
               <br />
-              <h4>
-                I was always invisible
-                Consequences are difficult to face
-                Could've been something beautiful, mmm
-                But you made it impossible to stay
-                So tell me what you got on your mind
-                What you got on your mind?
-                What you got on your mind?
-                Am I keeping you up at night?
-                Keeping you up at night?
-                I'll never let you be, no
-              </h4>
+              <h4>{props.description}</h4>
             </div>
           </div>
         </div>
@@ -71,7 +60,20 @@ const Review = ({ imgSrc, title, content }) => {
 const App = () => {
   return (
     <div className="row">
-      <Profile />
+      <Profile 
+        userImg={caloy}
+        username="Carly Reyi"
+        description="I was always invisible
+        Consequences are difficult to face
+        Could've been something beautiful, mmm
+        But you made it impossible to stay
+        So tell me what you got on your mind
+        What you got on your mind?
+        What you got on your mind?
+        Am I keeping you up at night?
+        Keeping you up at night?
+        I'll never let you be, no"
+      />
       <div className="col-lg-8">
         <div className="cards-container">
           <div className="row">
