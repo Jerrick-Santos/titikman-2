@@ -6,7 +6,7 @@ import starbucks from '../assets/starbucks.jpg';
 import subway from '../assets/subway.jpg';
 import React, { useState } from 'react';
 
-const Profile = () => {
+const Profile = (props) => {
   return (
     <div className="col-lg-4">
       <div className="container">
@@ -16,7 +16,7 @@ const Profile = () => {
               <div className="profile-icon">
                 <img src={caloy} alt="Profile Picture" />
               </div>
-              <h3 className="profile-name">{"Carly Rey"}</h3>
+              <h3 className="profile-name">props.username</h3>
               <br />
               <h4>
                 I was always invisible
