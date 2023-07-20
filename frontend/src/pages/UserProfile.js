@@ -18,7 +18,7 @@ const Profile = (props) => {
               </div>
               <h3 className="profile-name">{props.username}</h3>
               <br />
-              <h4>{props.description}</h4>
+              <h4>{props.bio}</h4>
             </div>
           </div>
         </div>
@@ -63,7 +63,7 @@ const App = () => {
       <Profile 
         userImg={caloy}
         username="Carly Reyi"
-        description="I was always invisible
+        bio="I was always invisible
         Consequences are difficult to face
         Could've been something beautiful, mmm
         But you made it impossible to stay

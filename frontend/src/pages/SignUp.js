@@ -13,6 +13,22 @@ const SignUpForm = () => {
   const [birthYear, setBirthYear] = useState('');
   const [userType, setUserType] = useState('');
 
+  const register = () => {
+    Axios.post('http://localhost3001/register', {
+      firstname: firstName,
+      lastname: lastName, 
+      username: username,
+      email: email,
+      password: password,
+      confirmpassword: confirmPassword,
+      birthmonth: birthMonth,
+      birthday: birthDay,
+      birthyear: birthYear,
+      usertype: userType}).then((response)=>{
+        console.log(response)
+      });
+  }
+
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
   };
@@ -182,7 +198,7 @@ const SignUpForm = () => {
                 By continuing, you agree to Titikman's Terms of Service and acknowledge Titikman's Privacy Policy
               </p>
               <div className="input-group mb-3">
-                <button type="submit" className="btn btn-lg btn-danger w-100 fs-6">
+                <button type="submit" className="btn btn-lg btn-danger w-100 fs-6" onClick={register}>
                   Sign Up
                 </button>
               </div>
