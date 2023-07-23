@@ -24,9 +24,10 @@ const SignUpForm = () => {
       birthmonth: birthMonth,
       birthday: birthDay,
       birthyear: birthYear,
-      usertype: userType}).then((response)=>{
+      usertype: userType
+    }).then((response)=>{
         console.log(response)
-      });
+    });
   }
 
   const handleFirstNameChange = (e) => {
@@ -92,7 +93,7 @@ const SignUpForm = () => {
             <div className="header-text mb-3 text-danger">
               <h1>Sign Up</h1>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form action="" onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col">
                   <input
