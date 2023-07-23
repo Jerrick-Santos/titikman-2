@@ -1,4 +1,5 @@
 
+//restoid = mangagaleng ito sa param._id
 
 const RestoCard = (props) => {
     return(

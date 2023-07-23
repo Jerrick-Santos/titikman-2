@@ -6,7 +6,7 @@ import SampleForm from './pages/sampleForm'
 function App(){
     return(
         <>
-            <NavBar/>
+            <NavBar/>   
             <BrowserRouter>
                 <Routes>
                     <Route
