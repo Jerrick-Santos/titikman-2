@@ -11,9 +11,12 @@ const LoginForm = () => {
     e.preventDefault();
 
     try{
-      await axios.post("http://localhost4000/",{
+      const response = await axios.post("http://localhost4000/",{
         userType, username, password
-      })
+      });
+
+      document.cookie = 'userType=${response.data.userType}';
+      document.cookie = '_id=${response.data._id}';
     }
     catch(e){
       console.log(e);

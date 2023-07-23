@@ -15,15 +15,12 @@ const createUser = async (req, res) => {
     try {
 
         newUser = new User({firstName, lastName, userName, password, bio, icon, userType})
-        newUser.save()
+        const savedUser = await newUser.save();
 
-        .then((savedUser) => {
-            console.log('New book saved to MongoDB:', savedUser);
-        })
-        .catch((error) => {
-            console.error('Error saving new book:', error);
-        });
+        res.cookie('userType', savedUser.userType);
+        res.cookie('_id', savedUser._id);
 
+        console.log('New user saved to MongoDB:', savedUser);
         res.status(200).json({newUser})
 
     } catch (error) {
