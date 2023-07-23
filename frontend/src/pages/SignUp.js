@@ -1,5 +1,6 @@
 import restaurant from '../assets/restaurant.png';
 import React, { useState } from 'react';
+import Axios from 'axios'
 
 const SignUpForm = () => {
   const [firstName, setFirstName] = useState('');
@@ -12,6 +13,23 @@ const SignUpForm = () => {
   const [birthDay, setBirthDay] = useState('');
   const [birthYear, setBirthYear] = useState('');
   const [userType, setUserType] = useState('');
+
+  const register = () => {
+    Axios.post('http://localhost4000/signup', {
+      firstname: firstName,
+      lastname: lastName, 
+      username: username,
+      email: email,
+      password: password,
+      confirmpassword: confirmPassword,
+      birthmonth: birthMonth,
+      birthday: birthDay,
+      birthyear: birthYear,
+      usertype: userType
+    }).then((response)=>{
+        console.log(response)
+    });
+  }
 
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
@@ -76,7 +94,7 @@ const SignUpForm = () => {
             <div className="header-text mb-3 text-danger">
               <h1>Sign Up</h1>
             </div>
-            <form onSubmit={handleSubmit}>
+            <form action="" onSubmit={handleSubmit}>
               <div className="row">
                 <div className="col">
                   <input
@@ -182,7 +200,7 @@ const SignUpForm = () => {
                 By continuing, you agree to Titikman's Terms of Service and acknowledge Titikman's Privacy Policy
               </p>
               <div className="input-group mb-3">
-                <button type="submit" className="btn btn-lg btn-danger w-100 fs-6">
+                <button type="submit" className="btn btn-lg btn-danger w-100 fs-6" onClick={register}>
                   Sign Up
                 </button>
               </div>

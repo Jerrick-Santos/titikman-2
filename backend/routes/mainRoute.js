@@ -2,6 +2,7 @@ const express = require('express')
 const {    getRestos,
     getResto,
     createResto,
+    searchResto,
     getThumbnail,
     getReviewsByUser,
     getReview,
@@ -19,7 +20,7 @@ const upload = multer({ dest: 'uploads/' })
 
 router.get('/profile/:id', getUser) //OK
 
-router.patch('/profile/:id', editUser) //OK
+router.patch('/profile/:id', upload.single('image'), editUser) //OK
 
 router.post('/signup', createUser) //OK
 
@@ -40,9 +41,12 @@ router.patch('/review/:resto/:id', upload.single('image'), updateReview) //OK ->
 
 router.get('/restos', getRestos) //OK
 
+router.get('/resto/search', searchResto)
+
 router.get('/resto/:id', getResto) //OK
 
 router.post('/restonew', createResto) //OK
+
 
 // TEST ROUTES 
 

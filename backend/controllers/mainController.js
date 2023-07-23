@@ -8,7 +8,9 @@ const { uploadFile } = require('../s3')
 //USER REQUESTS
 
 const createUser = async (req, res) => {
-    const {userName, password, bio, icon, userType} = req.body
+    const {userName, password, bio, userType} = req.body
+
+    let icon = ""
 
     try {
 
@@ -50,19 +52,53 @@ const getUser = async (req, res) => {
 const editUser = async (req, res) => {
     const { id } = req.params
 
+    let icon;
+    if (req.file) {
+        //filename = req.file.filename;
+        //upload to S3 server
+        try {
+            const s3Response = await uploadFile(req.file)
+            icon = s3Response.Location
+            console.log(s3Response.Location)
+        } catch (error) {
+            console.error('File not uploaded to S3')
+        }
+    }
+    else{
+
+        const previousImage = await User.findOne(
+            { _id: id }
+          );
+    
+          if (!previousImage) {
+            console.log('Restaurant or Review not found.');
+            return;
+          }
+    
+          icon = previousImage.icon;
+          console.log(icon);
+ 
+    }
+
     if(!mongoose.Types.ObjectId.isValid(id)){
         return res.status(404).json({error: 'No User Found'})
     }
 
-    const user = await User.findOneAndUpdate({_id: id}, {
-        ...req.body
-    })
+    try {
+        const user = await User.findOneAndUpdate({_id: id}, {
+            ...req.body,
+            "icon": icon
+        })
 
-    if(!user){
-        return res.status(404).json({error: 'User Not Found'})
+        if(!user){
+            return res.status(404).json({error: 'User Not Found'})
+        }
+
+        res.status(200).json(user)
+    } catch (error) {
+        res.status(400).json({error: error})
     }
 
-    res.status(200).json(user)
 }
 
 //REVIEW REQUESTS
@@ -143,7 +179,7 @@ const createReview = async (req, res) => {
         } = req.body
 
     //get user id via session - insert code here 
-    user = '64b7a444d8f8fd904c388853'//remove this when session has been implemented
+    user = '64bcce85020188f67738d4df'//remove this when session has been implemented
     datePosted = new Date()
     likes = 0
     dislikes = 0 
@@ -184,7 +220,6 @@ const createReview = async (req, res) => {
     }
 
 }
-
 
 const deleteReview = async (req, res) => {
     const { resto, id } = req.params 
@@ -363,6 +398,24 @@ const getRestos = async (req, res) => {
 
 }
 
+const searchResto = async (req, res) => {
+
+    const searchName = req.query.name;
+
+  try {
+    // Use a case-insensitive regex to perform the search
+    const regex = new RegExp(searchName, 'i');
+
+    // Perform the search in the 'restoName' field
+    const restos = await Resto.find({ restoName: regex });
+
+    res.status(200).json(restos);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to search for restaurants' });
+  }
+
+}
+
 //get a single resto 
 const getResto = async (req, res) => {
     const { id } = req.params
@@ -374,6 +427,15 @@ const getResto = async (req, res) => {
     }
 
     res.status(200).json(resto)
+}
+
+
+const uploadAssets = async (req, res) => {
+
+}
+
+const uploadMenu = async (req, res) => {
+    
 }
 
 // create a resto
@@ -438,6 +500,9 @@ const getThumbnail = async (req, res) => {
 
 module.exports = {
     getRestos,
+    searchResto,
+    uploadMenu,
+    uploadAssets,
     getResto,
     createResto,
     getThumbnail,
