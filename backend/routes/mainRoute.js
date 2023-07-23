@@ -11,7 +11,8 @@ const {    getRestos,
     updateReview,
     createUser,
     getUser,
-    editUser} = require('../controllers/mainController')
+    editUser,
+    login} = require('../controllers/mainController')
 
 const router = express.Router()
 const multer  = require('multer')
@@ -23,6 +24,8 @@ router.get('/profile/:id', getUser) //OK
 router.patch('/profile/:id', upload.single('image'), editUser) //OK
 
 router.post('/signup', createUser) //OK
+
+router.post('/login', login)
 
 
 // REVIEWS

@@ -31,6 +31,22 @@ const createUser = async (req, res) => {
     }
 }
 
+const login = async (req, res) => {
+    const { userName, password } = req.body
+    console.log(userName, password)
+    User.findOne({userName: userName}).then(user => {
+        if(user){
+            if(user.password === password){
+                res.json("Success")
+            } else {
+                res.json("Password Incorrect")
+            }
+        } else {
+            res.json("No Record Exists")
+        }
+    })
+}
+
 const getUser = async (req, res) => {
     const { id } = req.params
 
@@ -512,4 +528,5 @@ module.exports = {
     createUser,
     getUser,
     editUser,
+    login
 }
