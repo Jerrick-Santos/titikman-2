@@ -116,6 +116,7 @@ const ReviewCard = (props) => {
           <div className="rating d-flex justify-content-md-end align-content-center gap-2">
             <img src="assets/star.png" className="mt-2" id="star" alt="" />
             <p className="mt-2">  {props.userRating} </p>
+            <span className="fas fa-star checked mx-1" style={{ marginTop: '11px', marginLeft: '0px',}}></span>
           </div>
         </div>
         <div className="col-md-12 my-3" id="text-content">
