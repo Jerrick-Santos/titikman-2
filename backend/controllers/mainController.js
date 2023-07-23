@@ -8,14 +8,13 @@ const { uploadFile } = require('../s3')
 //USER REQUESTS
 
 const createUser = async (req, res) => {
-    const {userName, password, bio, userType} = req.body
+    const {firstName, lastName, userName, password, bio, userType} = req.body
 
     let icon = ""
 
     try {
 
-        newUser = new User({userName, password, bio, icon, userType})
-        
+        newUser = new User({firstName, lastName, userName, password, bio, icon, userType})
         newUser.save()
 
         .then((savedUser) => {
@@ -25,7 +24,7 @@ const createUser = async (req, res) => {
             console.error('Error saving new book:', error);
         });
 
-        res.status(200).json({message: "New User Registered"})
+        res.status(200).json({newUser})
 
     } catch (error) {
         res.status(400).json({error: error.message})
@@ -47,7 +46,6 @@ const getUser = async (req, res) => {
 
     res.status(200).json(user)
 }
-
 
 const editUser = async (req, res) => {
     const { id } = req.params
