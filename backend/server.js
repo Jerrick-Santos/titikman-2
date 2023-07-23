@@ -7,13 +7,17 @@ const MainRoutes = require('./routes/mainRoute')
 const path = require('path')
 const multer  = require('multer')
 const upload = multer({ dest: 'uploads/' })
+const cors = require("cors");
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
 
 //express app
 const app = express()
 //import mongoose dependency
 const mongoose = require('mongoose')
 
-
+app.use(cors());
+app.use(cookieParser());
 //log tracker - middleware
 app.use((req, res, next) => {
     console.log(req.path, res.method)

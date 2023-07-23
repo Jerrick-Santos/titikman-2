@@ -1,7 +1,7 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/Home';
 import NavBar from '../src/components/NavBar';
-import SampleForm from './pages/sampleForm'
+import SampleForm from './pages/SignUp'
 
 function App(){
     return(

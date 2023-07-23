@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
+import axios from "axios"
+
 
 const LoginForm = () => {
   const [userType, setUserType] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  async function submit(e){
+    e.preventDefault();
+
+    try{
+      await axios.post("http://localhost4000/",{
+        userType, username, password
+      })
+    }
+    catch(e){
+      console.log(e);
+    }
+  }
 
   const handleUserTypeChange = (e) => {
     setUserType(e.target.value);
@@ -66,7 +81,7 @@ const LoginForm = () => {
                   onChange={handlePasswordChange}
                 />
                 <div className="text-center mt-3 mb-2">
-                  <button type="submit" className="btn btn-danger">
+                  <button type="submit" className="btn btn-danger" onClick={submit}>
                     Login
                   </button>
                 </div>
