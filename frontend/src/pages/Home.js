@@ -34,7 +34,7 @@ const Home = () => {
             <div className="container-fluid mt-3">
                 <div className='row'>
                     {restos && restos.map((resto) => (
-                        <RestoCard restoImg={"http://localhost:4000/images/thumbnail/" + resto.thumbnail} restoName={resto.restoName} description={resto.description} avgRating={resto.avgRating} />
+                        <RestoCard key={resto._id} restoImg={"http://localhost:4000/images/thumbnail/" + resto.thumbnail} restoName={resto.restoName} description={resto.description} avgRating={resto.avgRating} />
                     ))}
                     {/* <RestoCard restoImg={jollibee} restoName="Jollibee" description="This is the description of Jollibee" avgRating={3.2} />
                     <RestoCard restoImg={img} restoName="Subway" description="This is the description of Subway" avgRating={4.3} />

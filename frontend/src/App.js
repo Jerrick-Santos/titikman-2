@@ -1,6 +1,7 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/Home';
 import NavBar from '../src/components/NavBar';
+import SampleForm from './pages/sampleForm'
 
 function App(){
     return(
@@ -11,7 +12,7 @@ function App(){
                     <Route
                     
                     path="/"
-                    element={<Home/>}/>
+                    element={<SampleForm/>}/>
 
                 </Routes>
             </BrowserRouter>
