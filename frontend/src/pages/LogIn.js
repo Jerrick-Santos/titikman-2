@@ -3,29 +3,9 @@ import axios from "axios"
 
 
 const LoginForm = () => {
-  const [userType, setUserType] = useState('');
-  const [username, setUsername] = useState('');
+  const [userName, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  async function submit(e){
-    e.preventDefault();
-
-    try{
-      const response = await axios.post("http://localhost4000/",{
-        userType, username, password
-      });
-
-      document.cookie = 'userType=${response.data.userType}';
-      document.cookie = '_id=${response.data._id}';
-    }
-    catch(e){
-      console.log(e);
-    }
-  }
-
-  const handleUserTypeChange = (e) => {
-    setUserType(e.target.value);
-  };
+  const [error, setError] = useState(null)
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -35,12 +15,28 @@ const LoginForm = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Perform any necessary login logic here using the userType, username, and password state variables.
-    console.log('User Type:', userType);
-    console.log('Username:', username);
-    console.log('Password:', password);
+    const login = {userName, password}
+    const response = await fetch('/api/login', {
+      method: "POST",
+      body: JSON.stringify(login),
+      headers: {
+        'Content-Type':'application/json'
+      }
+    })
+    const json = await response.json()
+
+    if (!response.ok) {
+      setError(json.error)
+    }
+    if (response.ok) {
+      setUsername('')
+      setPassword('')
+      setError(null)
+      console.log('Logged', json)
+    }
   };
 
   return (
@@ -51,28 +47,12 @@ const LoginForm = () => {
             <div className="card-body">
               <h1 className="text-center mt-3 text-danger">Login</h1>
               <form onSubmit={handleSubmit}>
-                <div className="mb-1">
-                  <label htmlFor="userType" className="form-label">
-                    Select User Type:
-                  </label>
-                </div>
-                <select
-                  id="userType"
-                  className="form-select mb-3"
-                  aria-label="Default select example"
-                  value={userType}
-                  onChange={handleUserTypeChange}
-                >
-                  <option value="">Open this select menu</option>
-                  <option value="1">User</option>
-                  <option value="2">Owner</option>
-                </select>
                 <input
                   type="text"
                   id="username"
                   className="form-control my-4 py-2"
                   placeholder="Username"
-                  value={username}
+                  value={userName}
                   onChange={handleUsernameChange}
                 />
                 <input
@@ -84,7 +64,7 @@ const LoginForm = () => {
                   onChange={handlePasswordChange}
                 />
                 <div className="text-center mt-3 mb-2">
-                  <button type="submit" className="btn btn-danger" onClick={submit}>
+                  <button type="submit" className="btn btn-danger">
                     Login
                   </button>
                 </div>

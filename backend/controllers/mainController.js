@@ -31,9 +31,11 @@ const createUser = async (req, res) => {
 const login = async (req, res) => {
     const { userName, password } = req.body
     console.log(userName, password)
-    User.findOne({userName: userName}).then(user => {
+    User.findOne({userName: userName}).then((user) => {
         if(user){
             if(user.password === password){
+                res.cookie('userType', user.userType);
+                res.cookie('_id', user._id);
                 res.json("Success")
             } else {
                 res.json("Password Incorrect")

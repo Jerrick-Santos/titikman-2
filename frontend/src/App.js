@@ -2,6 +2,7 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom'
 import Home from './pages/Home';
 import NavBar from '../src/components/NavBar';
 import SignUpForm from './pages/SignUp'
+import LoginForm from './pages/LogIn';
 function App(){
     return(
         <>
@@ -11,7 +12,7 @@ function App(){
                     <Route
                     
                     path="/"
-                    element={<SignUpForm/>}/>
+                    element={<LoginForm/>}/>
 
                 </Routes>
             </BrowserRouter>
