@@ -31,15 +31,17 @@ const createUser = async (req, res) => {
 const login = async (req, res) => {
     const { userName, password } = req.body
     console.log(userName, password)
-    User.findOne({userName: userName}).then(user => {
+    User.findOne({userName: userName}).then((user) => {
         if(user){
             if(user.password === password){
-                res.json("Success")
+                res.cookie('userType', user.userType);
+                res.cookie('_id', user._id);
+                res.json("Success");
             } else {
-                res.json("Password Incorrect")
+                res.status(401).json("Password Incorrect");
             }
         } else {
-            res.json("No Record Exists")
+            res.status(401).json("No Record Exists");
         }
     })
 }
@@ -279,6 +281,13 @@ const updateReview = async (req, res) => {
     const { resto, id } = req.params 
     const { userRating, revContent, likes, dislikes, hasOwnerResponse, responseContent} = req.body;
 
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
+    console.log(formattedDate)
+
     let filename;
     if (req.file) {
         try {
@@ -343,7 +352,7 @@ const updateReview = async (req, res) => {
                   'reviews.$.dislikes': dislikes,
                   'reviews.$.filename': filename,
                   'reviews.$.hasOwnerResponse': hasOwnerResponse,
-                  'reviews.$.responseDatePosted': new Date().toISOString().split('T')[0].toString(),
+                  'reviews.$.responseDatePosted': formattedDate,
                   'reviews.$.responseContent': responseContent 
                 }
               }
