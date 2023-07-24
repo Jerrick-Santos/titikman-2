@@ -2,9 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import EditUser from '../components/EditUser';
-
+import Cookies from 'js-cookie';
+import NavBar from '../components/NavBar';
 
 const UserProfile = () => {
+  const userId = useState(Cookies.get('_id')) 
+  const userType = useState(Cookies.get('userType')) 
   const [profileData, setProfileData] = useState({});
   const [reviewData, setReviewData] = useState([]);
   const { id } = useParams();
@@ -130,7 +133,9 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="container">
+    <>
+      <NavBar userIDcookies={userId}/>
+      <div className="container">
       <div className="row d-flex">
         <div className="col-lg-4">
           <div className="container-fluid pt-2">
@@ -184,6 +189,8 @@ const UserProfile = () => {
         </div>
       </div>
     </div>
+    </>
+
   );
 };
 

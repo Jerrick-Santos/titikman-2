@@ -22,6 +22,7 @@ const createUser = async (req, res) => {
 
         console.log('New user saved to MongoDB:', savedUser);
         res.status(200).json({newUser})
+        
 
     } catch (error) {
         res.status(400).json({error: error.message})
@@ -372,8 +373,23 @@ const updateReview = async (req, res) => {
 //get all restos 
 const getRestos = async (req, res) => {
 
-    res.cookie('userType', 1);
-    res.cookie('_id', process.env.GUEST_USERID);
+
+    if(req.cookies._id && req.cookies.userType){
+        if(req.cookies._id == process.env.GUEST_USERID && req.cookies.userType == 1){
+            res.cookie('userType', 1);
+            res.cookie('_id', process.env.GUEST_USERID);
+            console.log("Anon User Match")
+        }
+        else{
+            console.log("Diff User")
+        }
+    }
+    else{
+        res.cookie('userType', 1);
+        res.cookie('_id', process.env.GUEST_USERID);
+    }
+
+
 
     try {
 

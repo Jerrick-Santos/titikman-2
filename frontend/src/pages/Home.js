@@ -5,21 +5,30 @@ import chicken from '../assets/24chicken.jpg';
 import Banner from '../components/Banner'
 import RestoCard from '../components/RestoCard'
 import { useEffect, useState } from 'react';
-
+import Cookies from 'js-cookie';
+import NavBar from '../components/NavBar';
 
 const Home = () => {
 
     const [restos, setRestos] = useState(null)
+    const userId = useState(Cookies.get('_id')) 
+    const userType = useState(Cookies.get('userType')) 
+
 
     useEffect(() => {
-        const fecthRestos = async () => {
-            const response = await fetch('/api/home')
+        
 
+        const fecthRestos = async () => {
+            const response = await fetch('/api/restos')
+            
             const json = await response.json()
 
             if(response.ok){
                 setRestos(json)
+
             }
+
+            
         }
 
         fecthRestos()
@@ -28,6 +37,7 @@ const Home = () => {
 
     return(
         <>
+        <NavBar userIDcookies={userId} />
         <div className='Home'>
             <Banner />
 

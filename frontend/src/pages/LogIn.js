@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios"
-
+import NavBar from '../components/NavBar';
+import Cookies from 'js-cookie';
 
 
 const LoginForm = () => {
+  const userId = useState(Cookies.get('_id')) 
+  const userType = useState(Cookies.get('userType')) 
   const [userName, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null)
@@ -44,6 +47,10 @@ const LoginForm = () => {
   };
 
   return (
+
+    <>
+    <NavBar userIDcookies={userId} />
+    
     <div className="container justify-content-center align-items-center mt-5 pt-4">
       <div className="row">
         <div className="col-12 col-sm-8 col-md-6 m-auto">
@@ -82,6 +89,9 @@ const LoginForm = () => {
         </div>
       </div>
     </div>
+    </>
+    
+    
   );
 };
 

@@ -32,6 +32,7 @@ function EditUser(props) {
 
       // Close the modal after successful submission
       handleClose();
+      window.location.reload();
     } catch (error) {
       console.error('Error updating profile:', error);
     }

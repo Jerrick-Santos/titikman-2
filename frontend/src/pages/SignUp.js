@@ -2,8 +2,13 @@ import restaurant from '../assets/restaurant.png';
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios'
+import Cookies from 'js-cookie';
+import NavBar from '../components/NavBar';
+
 
 const SignUpForm = () => {
+  const userId = useState(Cookies.get('_id')) 
+  const usertype = useState(Cookies.get('userType')) 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [userName, setUsername] = useState('');
@@ -60,7 +65,10 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="container align-items-center mt-1 pt-5">
+
+    <>
+      <NavBar userIDcookies={userId}/>
+      <div className="container align-items-center mt-1 pt-5">
       <div className="row border rounded-5 p-4 bg-white shadow box-area">
         <div className="col-md-6 left-box">
           <div className="row align-items-center">
@@ -146,6 +154,8 @@ const SignUpForm = () => {
         </div>
       </div>
     </div>
+    </>
+    
   );
 };
 
