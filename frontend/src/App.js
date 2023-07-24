@@ -9,11 +9,8 @@ function App(){
             <NavBar/>   
             <BrowserRouter>
                 <Routes>
-                    <Route
-                    
-                    path="/"
-                    element={<LoginForm/>}/>
-
+                    <Route path="/" element={<LoginForm/>}/>
+                    <Route path="/home" element={<Home/>} />
                 </Routes>
             </BrowserRouter>
         </>

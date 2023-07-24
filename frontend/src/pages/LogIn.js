@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from "axios"
 
 
@@ -6,6 +7,7 @@ const LoginForm = () => {
   const [userName, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null)
+  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -24,18 +26,19 @@ const LoginForm = () => {
       body: JSON.stringify(login),
       headers: {
         'Content-Type':'application/json'
-      }
-    })
-    const json = await response.json()
+      },
+    });
 
-    if (!response.ok) {
-      setError(json.error)
-    }
     if (response.ok) {
-      setUsername('')
-      setPassword('')
-      setError(null)
-      console.log('Logged', json)
+      const json = await response.json();
+      setUsername('');
+      setPassword('');
+      setError(null);
+      console.log('Logged', json);
+      navigate('/home');
+    } else {
+      const errorMessage = await response.text(); // Get the error message from the response
+      setError(errorMessage);
     }
   };
 
@@ -46,6 +49,7 @@ const LoginForm = () => {
           <div className="card mt-5">
             <div className="card-body">
               <h1 className="text-center mt-3 text-danger">Login</h1>
+              {error && <p className="text-danger text-center">{error}</p>} {/* Add this line */}
               <form onSubmit={handleSubmit}>
                 <input
                   type="text"

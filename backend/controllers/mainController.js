@@ -36,12 +36,12 @@ const login = async (req, res) => {
             if(user.password === password){
                 res.cookie('userType', user.userType);
                 res.cookie('_id', user._id);
-                res.json("Success")
+                res.json("Success");
             } else {
-                res.json("Password Incorrect")
+                res.status(401).json("Password Incorrect");
             }
         } else {
-            res.json("No Record Exists")
+            res.status(401).json("No Record Exists");
         }
     })
 }
