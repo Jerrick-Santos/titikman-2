@@ -352,7 +352,7 @@ const updateReview = async (req, res) => {
                   'reviews.$.dislikes': dislikes,
                   'reviews.$.filename': filename,
                   'reviews.$.hasOwnerResponse': hasOwnerResponse,
-                  'reviews.$.responseDatePosted': formattedDate,
+                  'reviews.$.responseDatePosted': Date.now(),
                   'reviews.$.responseContent': responseContent 
                 }
               }
@@ -371,6 +371,9 @@ const updateReview = async (req, res) => {
 
 //get all restos 
 const getRestos = async (req, res) => {
+
+    res.cookie('userType', 1);
+    res.cookie('_id', process.env.GUEST_USERID);
 
     try {
 

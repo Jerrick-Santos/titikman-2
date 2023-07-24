@@ -3,14 +3,17 @@ import Home from './pages/Home';
 import NavBar from '../src/components/NavBar';
 import SignUpForm from './pages/SignUp'
 import LoginForm from './pages/LogIn';
+import UserProfile from './pages/UserProfile';
 function App(){
     return(
         <>
-            <NavBar/>   
             <BrowserRouter>
+                <NavBar/>  
                 <Routes>
-                    <Route path="/" element={<LoginForm/>}/>
-                    <Route path="/home" element={<Home/>} />
+                    <Route path="/login" element={<LoginForm/>}/>
+                    <Route path="/" element={<Home/>} />
+                    <Route path="/signup" element={<SignUpForm/>} />
+                    <Route path="/profile/:id" element={<UserProfile/>} />
                 </Routes>
             </BrowserRouter>
         </>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from "axios"
+
 
 
 const LoginForm = () => {
@@ -35,7 +36,7 @@ const LoginForm = () => {
       setPassword('');
       setError(null);
       console.log('Logged', json);
-      navigate('/home');
+      navigate('/');
     } else {
       const errorMessage = await response.text(); // Get the error message from the response
       setError(errorMessage);
@@ -73,7 +74,7 @@ const LoginForm = () => {
                   </button>
                 </div>
                 <small className="d-flex justify-content-center">
-                  New to Titikman? &nbsp;<a href="signup.html">Sign up</a>
+                  New to Titikman? &nbsp;<Link to="/signup">Sign up</Link>
                 </small>
               </form>
             </div>

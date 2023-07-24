@@ -1,7 +1,25 @@
 import search from '../assets/search.png';
 import user from '../assets/user.png';
+import Cookies from 'js-cookie';
+import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
-const NavBar = () => {
+  const NavBar = (props) => {
+    const GUEST_USERID = "64bdf3eea4354c42f888ec3c";
+    const [userID, setUserID] = useState(Cookies.get('_id')?.slice(3, 27));
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      setUserID(Cookies.get('_id')?.slice(3, 27));
+    }, []);
+
+  const handleLogout = () => {
+    Cookies.set('_id', GUEST_USERID);
+    Cookies.set('userType', 1);
+    setUserID(null);
+    navigate('/');
+  };
+
   return (
     <div className="App">
         <nav className="navbar sticky-top px-5 py-3">
@@ -21,13 +39,24 @@ const NavBar = () => {
 
             <span className="navbar-text" id="navbarText">
                 <div className="btn-group">
+                {userID === GUEST_USERID ? (
+                <Link to="/signup">
+                  <button type="button" className="btn btn-danger">
+                    Sign In
+                  </button>
+                </Link>
+              ) : (
+                <>
                   <button type="button" className="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                  Fredie <img src={user} alt="" id="user-pic"/>
+                    {props.userName} <img src={user} alt="" id="user-pic" />
                   </button>
                   <ul className="dropdown-menu">
-                      <li><a className="dropdown-item" href="Fredie.html">See Profile</a></li>
-                      <li><a className="dropdown-item" href="index.html">Log Out</a></li>
+                    <li><Link to={`/profile/${userID}`}>See Profile</Link></li>
+                    <li><button onClick={handleLogout} className="dropdown-item">Log Out</button></li>
                   </ul>
+                </>
+              )}
+                  
                 </div>
             </span>
 

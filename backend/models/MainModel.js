@@ -46,7 +46,7 @@ const reviewSchema = new Schema({
         require: true
     },
     responseDatePosted: {
-        type: String, 
+        type: Number, 
     },
     responseContent: {
         type: String, 

@@ -1,5 +1,6 @@
 import restaurant from '../assets/restaurant.png';
 import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios'
 
 const SignUpForm = () => {
@@ -9,6 +10,7 @@ const SignUpForm = () => {
   const [password, setPassword] = useState('');
   const [userType, setUserType] = useState('');
   const [error, setError] = useState(null)
+  const navigate = useNavigate();
 
   const handleFirstNameChange = (e) => {
     setFirstName(e.target.value);
@@ -53,6 +55,7 @@ const SignUpForm = () => {
       setUserType('')
       setError(null)
       console.log('New User added', json)
+      navigate('/');
     }
   };
 
@@ -130,7 +133,7 @@ const SignUpForm = () => {
               </div>
               <div className="row">
                 <small className="info d-flex justify-content-center">
-                  Already have an account? &nbsp;<a href="index.html">Log In</a>
+                  Already have an account? &nbsp;<Link to="/login">Log In</Link>
                 </small>
               </div>
             </form>
