@@ -1,92 +1,170 @@
 import React, { useState, useEffect } from 'react';
 import RestaurantProfile from '../components/RestaurantProfile';
 import ReviewCard from '../components/ReviewCard';
-import jb1 from '../assets/jollibee/jb1.jpg';
-import jb2 from '../assets/jollibee/jb2.jpg';
-import jb3 from '../assets/jollibee/jb3.jpg';
-import jbmenu1 from '../assets/jollibee/jb-menu-1.jpg';
-import jbmenu2 from '../assets/jollibee/jb-menu-2.jpg';
-import pfp from '../assets/migz.jpg';
-import pfp2 from '../assets/caloy.jpg';
-import ownerpfp from '../assets/jerrick.jpg';
+
+
+
+import pfp from '../assets/user1.png';
 import search from '../assets/search.png';
 import filter from '../assets/filter.png';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import NavBar from '../components/NavBar';
+import Cookies from 'js-cookie';
+
+
 
 const RestaurantPage = () => {
-  var a = [jb1, jb2, jb3];
-  var b = [jbmenu1, jbmenu2];
-  var userType = 2;
-  var currUsername = "New Reviewer";
-  var currPfp = pfp2;
+//Determine userType
+const { id } = useParams();
+var restoID = id
 
-  var reviews = [
-    <ReviewCard
-      username="Fredie Argie"
-      userProfilePic={pfp}
-      datePosted="2016-02-09"
-      userRating={3}
-      revContent="Jollibee is more than just a restaurant; it's an experience that brings joy and satisfaction to the whole family. From the delectable Chickenjoy that has become a staple on our table to the flavorful and filling spaghetti, Jollibee offers a wide array of mouthwatering dishes that cater to every family member's preferences"
-      reviewImg={jb1}
-      likes={100}
-      dislikes={10}
-      hasOwnerResponse={true}
-      ownerProfilePic={ownerpfp}
-      responseDatePosted="2017-03-05"
-      responseContent="Thank you very much, you don't know how much your word means to us. "
-      userType={2}
-    />,
-    <ReviewCard
-      username="User 2"
-      userProfilePic={pfp}
-      datePosted="2014-02-09"
-      userRating={2}
-      revContent="Hello World"
-      reviewImg={jb1}
-      likes={900}
-      dislikes={10}
-      hasOwnerResponse={true}
-      ownerProfilePic={ownerpfp}
-      responseDatePosted="2015-03-05"
-      responseContent="Tangina mo"
-      userType={1}
-    />,
-    <ReviewCard
-      username="User 2"
-      userProfilePic={pfp}
-      datePosted="2015-02-09"
-      userRating={4}
-      revContent="Hello"
-      reviewImg={jb1}
-      likes={20}
-      dislikes={10}
-      hasOwnerResponse={false}
-      ownerProfilePic={ownerpfp}
-      responseDatePosted="2015-03-05"
-      responseContent="Thank you very much, you don't know how much your word means to us. "
-      userType={1}
-    />,
-    <ReviewCard
-      username="Fredie Argie"
-      userProfilePic={pfp}
-      datePosted="2013-02-09"
-      userRating={5}
-      revContent="a"
-      reviewImg={jb1}
-      likes={150}
-      dislikes={10}
-      hasOwnerResponse={false}
-      ownerProfilePic={ownerpfp}
-      responseDatePosted="2015-03-05"
-      responseContent="Thank you very much, you don't know how much your word means to us. "
-      userType={2}
-    />,
-  ];
+if(Cookies.get('_id') !== '64bdf3eea4354c42f888ec3'){
+  var userID = Cookies.get('_id').slice(3,27)
+}
+else {
+  var userID = Cookies.get('_id')
+}
 
-  const [filteredReviews, setFilteredReviews] = useState(reviews);
+//var userID = Cookies.get('_id') // Fredie Argie
+//var userID = '64bcc185c87283efcb0b9d59' //Jollibee Owner
+//var userID = '64bdf3eea4354c42f888ec3c' //Guest
+
+
+
+
+
+
+
+
+  const [loading, setLoading] = useState(true);
+  
+
+  // State variables for fetched data
+  const [currRestoName, setCurrRestoName] = useState('');
+  const [currAvgRating, setCurrAvgRating] = useState(0);
+  const [currAssets, setCurrAssets] = useState([]);
+  const [currDescription, setCurrDescription] = useState('');
+  const [currMenuImgs, setCurrMenuImgs] = useState([]);
+  const [currRestoURL, setCurrRestoURL] = useState('');
+  const [currOperatingHours, setCurrOperatingHours] = useState('');
+  const [currContactNum, setCurrContactNum] = useState('');
+  const [filteredReviews, setFilteredReviews] = useState([]);
+  const [allReviews, setAllReviews] = useState([]); // State variable to store all reviews
+
+
+  const [userType, setUserType] = useState(0);
+  
+  useEffect(() => {
+    // Fetch restaurant data
+    axios.get(`http://localhost:4000/api/resto/${restoID}`)
+      .then(restoResponse => {
+        // Handle the successful response and update state variables
+        setCurrRestoName(restoResponse.data.restoName);
+        setCurrAvgRating(restoResponse.data.avgRating);
+        setCurrAssets(restoResponse.data.assets);
+        setCurrDescription(restoResponse.data.description);
+        setCurrMenuImgs(restoResponse.data.menuImgs);
+        setCurrRestoURL(restoResponse.data.restoUrl);
+        setCurrOperatingHours(restoResponse.data.operatingHours);
+        setCurrContactNum(restoResponse.data.contactNum);
+        setLoading(false);
+        
+  
+        // Fetch user type for the logged-in user
+        axios.get(`http://localhost:4000/api/profile/${userID}`)
+          .then(userResponse => {
+            const userTypeFromServer = userResponse.data.userType;
+            setUserType(userTypeFromServer)
+           
+            console.log('llll  ' + userTypeFromServer)
+  
+            // Fetch user information for each review and update filteredReviews
+            Promise.all(
+              restoResponse.data.reviews.map(review => axios.get(`http://localhost:4000/api/profile/${review.user}`))
+            )
+              .then(userResponses => {
+                const updatedReviews = restoResponse.data.reviews.map((review, index) => {
+                  const userData = userResponses[index].data;
+  
+                  // Check if the review user matches the logged-in user (userID)
+                  let reviewUserType = 1;
+                  if (userTypeFromServer === 2) {
+                    if (review.user === userID) {
+                      reviewUserType = 2;
+                    } else {
+                      reviewUserType = 3;
+                    }
+                  }
+  
+                  // If the userID matches the restaurant owner, set userType to 4
+                  if (userID === restoResponse.data.owner) {
+                    reviewUserType = 4;
+                  }
+
+                  console.log('userType ' + userTypeFromServer)
+                  console.log('revUserType ' + reviewUserType)
+  
+                  // Update the review object with the correct reviewID
+                  const updatedReview = {
+                    ...review,
+                    reviewID: review._id // Add the reviewID to the review object
+                  };
+
+                 
+                  
+                  // Return the ReviewCard component with updated properties
+                  return (
+                    <ReviewCard
+                      // Accessing properties using dot notation
+                      // ...
+                      username={userData.userName}
+                      userProfilePic={userData.profilePic || pfp}
+                      datePosted={review.datePosted}
+                      userRating={review.userRating}
+                      revContent={review.revContent}
+                      filename={review.filename}
+                      likes={review.likes}
+                      dislikes={review.dislikes}
+                      hasOwnerResponse={review.hasOwnerResponse}
+                      ownerProfilePic={userData.profilePic || pfp}
+                      responseDatePosted={review.responseDatePosted}
+                      responseContent={review.responseContent}
+                      userType={reviewUserType} // Use the updated userType for the review
+                      reviewID={review._id} // Use the correct reviewID from the updatedReview object
+                      restoID={restoID}
+                      key={review._id}
+
+                      
+                      // ...
+                    />
+                  );
+                });
+                setAllReviews(updatedReviews);
+                setFilteredReviews(updatedReviews);
+              })
+              .catch(error => {
+                // Handle any errors that occurred during fetching user information
+                setLoading(false);
+              });
+          })
+          .catch(error => {
+            // Handle any errors that occurred during fetching user type
+            setLoading(false);
+            console.error('Error fetching user type:', error);
+          });
+      })
+      .catch(error => {
+        // Handle any errors that occurred during the request
+        setLoading(false);
+        console.error('Error fetching restaurant data:', error);
+      });
+  }, [restoID, userID]);
+
+  
   const [searchTerm, setSearchTerm] = useState('');
   const [filterOption, setFilterOption] = useState('');
   const [newReview, setNewReview] = useState(null);
-  
 
   useEffect(() => {
     handleSearchAndFilter(searchTerm, filterOption);
@@ -103,7 +181,7 @@ const RestaurantPage = () => {
   }, [newReview]);
 
   const handleSearchAndFilter = (searchTerm, filterOption) => {
-    let filtered = [...filteredReviews];
+    let filtered = [...allReviews];
   
     if (searchTerm) {
       filtered = filtered.filter(
@@ -123,58 +201,64 @@ const RestaurantPage = () => {
   
     setFilteredReviews(filtered);
   };
-  
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const rating = document.getElementById('rating').value;
-    const reviewText = e.target.elements.review.value;
-    console.log(reviewText);
+  const [userRating, setUserRating] = useState('');
+  const [revContent, setRevContent] = useState('');
+  const [filename, setFilename] = useState('');
   
-    const newReview = (
-      <ReviewCard
-        username={currUsername}
-        userProfilePic={currPfp}
-        datePosted={new Date().toISOString().split('T')[0]}
-        userRating={Number(rating)}
-        revContent={reviewText}
-        reviewImg={null}
-        likes={0}
-        dislikes={0}
-        hasOwnerResponse={false}
-        ownerProfilePic={ownerpfp}
-        responseDatePosted=""
-        responseContent=""
-        userType={2}
-      />
-    );
-  
-    setFilteredReviews((prevReviews) => [...prevReviews, newReview]);
-    setSearchTerm('');
-    setFilterOption('');
-    document.getElementById('review-form').reset();
+  const handleUserRatingChange = (e) => {
+    setUserRating(e.target.value);
+  };
+
+  const handleRevContentChange = (e) => {
+    setRevContent(e.target.value);
   };
 
   
   
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append('userRating', userRating);
+    formData.append('revContent', revContent);
+    formData.append('image', filename);
   
+    try {
+      const response = await axios.post(`http://localhost:4000/api/reviewnew/${restoID}`, formData);
   
+      setUserRating('');
+      setRevContent('');
+      setFilename('');
+      setSearchTerm('');
+      setFilterOption('');
+      document.getElementById('review-form').reset();
+      window.location.reload()
+    } catch (error) {
+      console.error('Error adding review:', error);
+    }
+  };
   
+ 
 
   return (
     <>
-      <div className="RestaurantPage">
+    <NavBar userIDcookies={userID}/>
+    {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="RestaurantPage">
         <div className="container-fluid main-content px-5 py-3">
           <div className="row gx-3 gy-3">
             <RestaurantProfile
-              restoName="Jollibee"
-              avgRating={4.1}
-              assets={a}
-              description="This is the description of Jollibee"
-              menuImgs={b}
-              restoURL="facebook.com"
-              operatingHours="everyday"
-              contactNum="8-7000"
+              restoName={currRestoName}
+              avgRating={currAvgRating}
+              assets={currAssets}
+              description={currDescription}
+              menuImgs={currMenuImgs}
+              restoURL={currRestoURL}
+              operatingHours={currOperatingHours}
+              contactNum={currContactNum}
             />
 
             <div className="col-lg-6 p-2">
@@ -182,7 +266,7 @@ const RestaurantPage = () => {
                 <h1 className="mb-3">Reviews</h1>
 
                 <div className="row d-flex">
-                  {userType !== 1 && (
+                  {((userType !== 3) && (userType !== 1) ) && (
                     <button
                       type="submit"
                       className="btn btn-danger btn-lg btn-block mb-3"
@@ -211,6 +295,8 @@ const RestaurantPage = () => {
                                     name="rating"
                                     required
                                     className="form-select"
+                                    value={userRating}
+                                    onChange={handleUserRatingChange}
                                   >
                                     <option value="">Select a rating</option>
                                     <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733;</option>
@@ -229,6 +315,8 @@ const RestaurantPage = () => {
                                     name="review"
                                     required
                                     className="form-control"
+                                    value={revContent}
+                                    onChange={handleRevContentChange}
                                   ></textarea>
                                 </div>
                                 <div className="mb-3">
@@ -240,7 +328,7 @@ const RestaurantPage = () => {
                                     id="media"
                                     name="media"
                                     accept="image/*, video/*"
-                                    className="form-control"
+                                    onChange={(e) => setFilename(e.target.files[0])}
                                   />
                                 </div>
                                 <div>
@@ -338,9 +426,9 @@ const RestaurantPage = () => {
                                   />
                                 </div>
                                 <div className="text-center">
-                                  <button type="submit" data-bs-dismiss="modal" className="btn btn-danger">
-                                    Search
-                                  </button>
+
+
+                          
                                 </div>
                               </form>
                             </div>
@@ -350,16 +438,17 @@ const RestaurantPage = () => {
 
                 </div>
 
-                {filteredReviews.map((review, index) => (
-                  <div key={index}>{review}</div>
-                ))}
+                {filteredReviews}
               </div>
             </div>
           </div>
         </div>
       </div>
+      )}
+      
     </>
   );
 };
+
 
 export default RestaurantPage;

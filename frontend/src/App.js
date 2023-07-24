@@ -4,6 +4,7 @@ import NavBar from '../src/components/NavBar';
 import SignUpForm from './pages/SignUp'
 import LoginForm from './pages/LogIn';
 import UserProfile from './pages/UserProfile';
+import RestaurantPage from './pages/RestaurantPage';
 function App(){
     return(
         <>
@@ -14,6 +15,7 @@ function App(){
                     <Route path="/" element={<Home/>} />
                     <Route path="/signup" element={<SignUpForm/>} />
                     <Route path="/profile/:id" element={<UserProfile/>} />
+                    <Route path="/resto/:id" element={<RestaurantPage/>} />
                 </Routes>
             </BrowserRouter>
         </>

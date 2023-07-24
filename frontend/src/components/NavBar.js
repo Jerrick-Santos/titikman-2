@@ -18,7 +18,7 @@ import React, { useState, useEffect } from 'react';
   const handleLogout = () => {
     Cookies.set('_id', GUEST_USERID);
     Cookies.set('userType', 1);
-    setUserID(null);
+    // setUserID(null);
     navigate('/');
     alert('Log Out Successful')
     window.location.reload();

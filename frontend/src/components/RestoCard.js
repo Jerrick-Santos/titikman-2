@@ -1,14 +1,17 @@
 
 //restoid = mangagaleng ito sa param._id
+import { useNavigate, Link } from 'react-router-dom';
+import { useState } from "react";
 
 const RestoCard = (props) => {
+    const [restoId, setRestoId] = useState(props.restoId)
+
     return(
         <>
             <div className="col-md-4 mb-4">
                 <div className="card">
-                <a href="subway.html">
-                    <img src={props.restoImg} className="card-img-top" alt="Food Image 1"/>
-                </a>
+
+                <Link to={`/resto/${restoId}`}><img src={props.restoImg} className="card-img-top" alt="Food Image 1"/></Link>
                 <div className="card-body">
 
                     <div className='d-flex justify-content-between align-items-center'>
