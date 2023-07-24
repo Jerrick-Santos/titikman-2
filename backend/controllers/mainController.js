@@ -277,47 +277,10 @@ const deleteReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
     const { resto, id } = req.params 
-    const { userRating, revContent} = req.body;
-
-
-    //Get previous URL of original review (unedited)
-    // let filename;
-    // if (req.file) {
-    //     //filename = req.file.filename;
-    //     //upload to S3 server
-    //     try {
-    //         const s3Response = await uploadFile(req.file)
-    //         filename = s3Response.Location
-    //         console.log(s3Response.Location)
-    //         console.log("Uploaded Successfully to S3")
-    //     } catch (error) {
-    //         console.error('File not uploaded to S3')
-    //     }
-    // }
-    // else{
-
-    //     try {
-    //         const previousImage = await Resto.find({ _id: resto, 'reviews._id': id }, { 'reviews.$': 1 })
-    //         .select('reviews.filename') 
-            
-    //         if (!previousImage) {
-    //             console.log('Restaurant or Review not found.');
-    //             return;
-    //         }
-    
-    //         filename = previousImage.file.filename
-    //         console.log(filename)
-    //     } catch (error) {
-    //         console.error('Did not retrieve previous image')
-    //     }
-
-    // }
-
+    const { userRating, revContent, likes, dislikes, hasOwnerResponse, responseContent} = req.body;
 
     let filename;
     if (req.file) {
-        //filename = req.file.filename;
-        //upload to S3 server
         try {
             const s3Response = await uploadFile(req.file)
             filename = s3Response.Location
@@ -342,7 +305,6 @@ const updateReview = async (req, res) => {
           console.log(filename);
  
     }
-
 
     console.log(resto)
     console.log(id)
@@ -377,12 +339,17 @@ const updateReview = async (req, res) => {
                 $set: {
                   'reviews.$.userRating': userRating,
                   'reviews.$.revContent': revContent,
-                  'reviews.$.filename': filename
+                  'reviews.$.likes': likes,
+                  'reviews.$.dislikes': dislikes,
+                  'reviews.$.filename': filename,
+                  'reviews.$.hasOwnerResponse': hasOwnerResponse,
+                  'reviews.$.responseDatePosted': new Date().toISOString().split('T')[0].toString(),
+                  'reviews.$.responseContent': responseContent 
                 }
               }
             );
       
-        res.status(200).json({message: "Resto has been updated"})
+        res.status(200).json(updatedRev)
         
     } catch (error) {
         res.status(400).json({error: error.message})
