@@ -19,12 +19,28 @@ const RestaurantPage = () => {
 const { id } = useParams();
 var restoID = id
 
-if(Cookies.get('_id') !== '64bdf3eea4354c42f888ec3'){
+if(Cookies.get('_id') !== '64bdf3eea4354c42f888ec3c'){
   var userID = Cookies.get('_id').slice(3,27)
 }
 else {
   var userID = Cookies.get('_id')
 }
+const [firstName, setFirstName] = useState('');
+
+useEffect(() => {
+  
+    axios.get(`http://localhost:4000/api/profile/${userID}`)
+      .then((response) => {
+        setFirstName(response.data.firstName)
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+
+}, []);
+
+
 
 //var userID = Cookies.get('_id') // Fredie Argie
 //var userID = '64bcc185c87283efcb0b9d59' //Jollibee Owner
@@ -102,7 +118,7 @@ else {
                     reviewUserType = 4;
                   }
 
-                  console.log('userType ' + userTypeFromServer)
+                  console.log('userID:     ' + userData._id)
                   console.log('revUserType ' + reviewUserType)
   
                   // Update the review object with the correct reviewID
@@ -118,8 +134,10 @@ else {
                     <ReviewCard
                       // Accessing properties using dot notation
                       // ...
+                      currentUser={userID}
+                      userID={userData._id}
                       username={userData.userName}
-                      userProfilePic={userData.profilePic || pfp}
+                      userProfilePic={userData.icon || pfp}
                       datePosted={review.datePosted}
                       userRating={review.userRating}
                       revContent={review.revContent}
@@ -134,6 +152,8 @@ else {
                       reviewID={review._id} // Use the correct reviewID from the updatedReview object
                       restoID={restoID}
                       key={review._id}
+                      dislikedUsers={review.dislikedUsers}
+                      likedUsers={review.likedUsers}
 
                       
                       // ...
@@ -243,7 +263,7 @@ else {
 
   return (
     <>
-    <NavBar userIDcookies={userID}/>
+    <NavBar userIDcookies={userID} userName={firstName}/>
     {loading ? (
         <div>Loading...</div>
       ) : (

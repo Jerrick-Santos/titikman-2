@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
     const GUEST_USERID = "64bdf3eea4354c42f888ec3c";
     const [userID, setUserID] = useState(props.userIDcookies);
     const navigate = useNavigate();
-    console.log(userID)
+    console.log("new user id:" + userID)
     console.log(GUEST_USERID)
   
     useEffect(() => {
@@ -23,6 +23,11 @@ import React, { useState, useEffect } from 'react';
     alert('Log Out Successful')
     window.location.reload();
   };
+
+  const handleReload = () => {
+
+    window.location.reload();
+  }
 
   return (
     <div className="App">
@@ -52,10 +57,12 @@ import React, { useState, useEffect } from 'react';
               ) : (
                 <>
                   <button type="button" className="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  
                     {props.userName} <img src={user} alt="" id="user-pic" />
+                    
                   </button>
                   <ul className="dropdown-menu">
-                    <li><Link to={`/profile/${userID.slice(3, 27)}`}>See Profile</Link></li>
+                    <li><button onClick={handleReload} className="dropdown-item"><Link to={`/profile/${userID.slice(3, 27)}`}>See Profile</Link></button></li>
                     <li><button onClick={handleLogout} className="dropdown-item">Log Out</button></li>
                   </ul>
                 </>

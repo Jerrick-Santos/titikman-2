@@ -1,4 +1,4 @@
-
+import Cookies from 'js-cookie';
 const {Resto, User, Review} = require('../models/MainModel')
 const mongoose = require('mongoose')
 const { MongoClient, ObjectId } = require('mongodb');
@@ -216,7 +216,9 @@ const createReview = async (req, res) => {
             filename,
             likes, 
             dislikes,
-            hasOwnerResponse})
+            hasOwnerResponse,
+            likedUsers,
+            dislikedUsers})
         
         newReview.save()
 
@@ -280,7 +282,7 @@ const deleteReview = async (req, res) => {
 
 const updateReview = async (req, res) => {
     const { resto, id } = req.params 
-    const { userRating, revContent, likes, dislikes, hasOwnerResponse, responseContent} = req.body;
+    const { userRating, revContent, likes, dislikes, hasOwnerResponse, responseContent, likedUsers, dislikedUsers} = req.body;
 
     const date = new Date();
     const year = date.getFullYear();
@@ -354,7 +356,10 @@ const updateReview = async (req, res) => {
                   'reviews.$.filename': filename,
                   'reviews.$.hasOwnerResponse': hasOwnerResponse,
                   'reviews.$.responseDatePosted': Date.now(),
-                  'reviews.$.responseContent': responseContent 
+                  'reviews.$.responseContent': responseContent,
+                  'reviews.$.likedUsers': likedUsers,
+                  'reviews.$.dislikedUsers': dislikedUsers
+
                 }
               }
             );

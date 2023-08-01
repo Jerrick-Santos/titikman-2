@@ -50,7 +50,9 @@ const reviewSchema = new Schema({
     },
     responseContent: {
         type: String, 
-    }
+    },
+    likedUsers:[String],
+    dislikedUsers:[String],
 }, {timestamps: true}) 
 
 const Review = mongoose.model('Review', reviewSchema);

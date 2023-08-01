@@ -6,11 +6,33 @@ import Cookies from 'js-cookie';
 import NavBar from '../components/NavBar';
 
 const UserProfile = () => {
-  const userId = useState(Cookies.get('_id')) 
+  if(Cookies.get('_id') !== '64bdf3eea4354c42f888ec3c'){
+    var userID = Cookies.get('_id').slice(3,27)
+  }
+  else {
+    var userID = Cookies.get('_id')
+  }
+
+  const [navFirstName, setNavFirstName] = useState('');
+
+  useEffect(() => {
+    
+    axios.get(`http://localhost:4000/api/profile/${userID}`)
+      .then((response) => {
+        setNavFirstName(response.data.firstName)
+      })
+      .catch((error) => {
+        // Handle any errors that occurred during the request
+        console.error('Error fetching data:', error);
+      });
+
+}, []);
+  console.log("userID IS " + userID)
   const userType = useState(Cookies.get('userType')) 
   const [profileData, setProfileData] = useState({});
   const [reviewData, setReviewData] = useState([]);
   const { id } = useParams();
+  
 
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -134,10 +156,10 @@ const UserProfile = () => {
 
   return (
     <>
-      <NavBar userIDcookies={userId}/>
+      <NavBar userIDcookies={userID} userName={navFirstName}/>
       <div className="container">
       <div className="row d-flex">
-        <div className="col-lg-4">
+        <div className="col-lg-4 mb-4">
           <div className="container-fluid pt-2">
             <div className="row">
               <div className="col-sm-6">
@@ -146,17 +168,19 @@ const UserProfile = () => {
                     <img src={icon}alt="Profile Picture" />
                   </div>
 
-                  <h3> username: {userName}</h3>
+                  
                   <h3 className="profile-name">
                     {firstName} {lastName}
                   </h3>
+                  <p style={{fontSize:"20px", marginTop:"0px"}}> username: {userName}</p>
 
                   <p>
                     {bio}
                   </p>
                   {/* ... */}
 
-                  <EditUser bio={bio} userId={id} setUpdateProfile={setUpdateProfile}/>
+                  {userID===id && <EditUser bio={bio} userId={id} setUpdateProfile={setUpdateProfile} />}
+
 
                   <div className="modal fade" id="editprofile" tabIndex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
@@ -169,8 +193,8 @@ const UserProfile = () => {
           </div>
         </div>
 
-        <div className="col-lg-8 pt-2">
-          <div className="cards-container px-lg-4">
+        <div className="col-lg-8 pt-2 mb-4">
+          <div className="cards-container px-lg-4" style={{ marginLeft:'120px' }}>
             <div className="row">
               {/* Display user reviews */}
               {reviewData.map((review) => (

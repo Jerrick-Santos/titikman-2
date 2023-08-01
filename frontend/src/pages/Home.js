@@ -7,12 +7,35 @@ import RestoCard from '../components/RestoCard'
 import { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import NavBar from '../components/NavBar';
+import axios from 'axios';
 
 const Home = () => {
 
     const [restos, setRestos] = useState(null)
     const userId = useState(Cookies.get('_id')) 
     const userType = useState(Cookies.get('userType')) 
+
+    
+if(Cookies.get('_id') !== '64bdf3eea4354c42f888ec3c'){
+    var userID = Cookies.get('_id').slice(3,27)
+  }
+  else {
+    var userID = Cookies.get('_id')
+  }
+  const [firstName, setFirstName] = useState('');
+  
+  useEffect(() => {
+    
+      axios.get(`http://localhost:4000/api/profile/${userID}`)
+        .then((response) => {
+          setFirstName(response.data.firstName)
+        })
+        .catch((error) => {
+          // Handle any errors that occurred during the request
+          console.error('Error fetching data:', error);
+        });
+  
+  }, []);
 
 
     useEffect(() => {
@@ -37,7 +60,7 @@ const Home = () => {
 
     return(
         <>
-        <NavBar userIDcookies={userId} />
+        <NavBar userIDcookies={userId} userName={firstName}/>
         <div className='Home'>
             <Banner />
 

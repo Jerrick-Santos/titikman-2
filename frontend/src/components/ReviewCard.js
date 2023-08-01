@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect} from 'react';
 
 
 import sad from '../assets/sad.png';
@@ -9,6 +9,7 @@ import EditReviewModal from './EditReviewModal';
 import AttachmentsModal from './AttachmentsModal';
 import ResponseModal from './ResponseModal';
 import EditResponseModal from './EditResponseModal';
+import {Link } from 'react-router-dom';
 
 
 
@@ -18,7 +19,10 @@ const ReviewCard = (props) => {
     setReviewID(props.reviewID);
   }, [props.reviewID]);
 
-
+  var likedUsers = props.likedUsers;
+  var dislikedUsers = props.dislikedUsers;
+  var userID = props.userID
+  
   const handleDelete = async () => {
     try {
       // Make an API call to delete the review from the database using the reviewID
@@ -50,33 +54,51 @@ const ReviewCard = (props) => {
   const [likes, setLikes] = useState(props.likes);
   const [dislikes, setDislikes] = useState(props.dislikes);
 
-  const handleLike = async () => {
-    if (!props.hasLiked) {
-      // If user hasn't liked, add 1 to likes
-      setLikes((prevLikes) => prevLikes + 1);
-      // If user has disliked before, subtract 1 from dislikes
-      if (props.hasDisliked) {
-        setDislikes((prevDislikes) => prevDislikes - 1);
-      }
-      // Update the like status in the database using the API call
-      await updateLikesInDB(likes + 1, dislikes, true, false);
+  function removeElementFromArray(arr, element) {
+    const index = arr.indexOf(element);
+    if (index !== -1) {
+      arr.splice(index, 1);
+      return true;
     }
+    return false;
+  }
+
+  const handleLike = async () => {
+     // If user hasn't disliked, add 1 to dislikes
+     if (!likedUsers.includes(props.currentUser)){
+      setLikes((prevLikes) => prevLikes + 1);
+      likedUsers.push(props.currentUser);
+      // Update the dislike status in the database using the API call
+      await updateLikesInDB(likes + 1, dislikes, likedUsers, dislikedUsers);
+    }
+      // If user has liked before, subtract 1 from likes
+    else {
+        setLikes((prevLikes) => prevLikes - 1);
+        removeElementFromArray(likedUsers,props.currentUser)
+        await updateLikesInDB(likes - 1, dislikes, likedUsers, dislikedUsers);
+      }
   };
 
   const handleDislike = async () => {
-    if (!props.hasDisliked) {
+    
       // If user hasn't disliked, add 1 to dislikes
+    if (!dislikedUsers.includes(props.currentUser)){
       setDislikes((prevDislikes) => prevDislikes + 1);
-      // If user has liked before, subtract 1 from likes
-      if (props.hasLiked) {
-        setLikes((prevLikes) => prevLikes - 1);
-      }
+      dislikedUsers.push(props.currentUser);
       // Update the dislike status in the database using the API call
-      await updateLikesInDB(likes, dislikes + 1, false, true);
+      await updateLikesInDB(likes, dislikes + 1, likedUsers, dislikedUsers);
     }
+      // If user has liked before, subtract 1 from likes
+    else {
+        setDislikes((prevDislikes) => prevDislikes - 1);
+        removeElementFromArray(dislikedUsers,props.currentUser)
+        await updateLikesInDB(likes, dislikes - 1, likedUsers, dislikedUsers);
+      }
+      
+    
   };
 
-  const updateLikesInDB = async (likes, dislikes, hasLiked, hasDisliked) => {
+  const updateLikesInDB = async (likes, dislikes, likedUsers, dislikedUsers) => {
     try {
       // Make an API call to update the like and dislike counts in the database
       // with the new values (likes and dislikes).
@@ -86,6 +108,9 @@ const ReviewCard = (props) => {
         {
           likes: likes,
           dislikes: dislikes,
+          likedUsers: likedUsers,
+          dislikedUsers: dislikedUsers
+
         }
       );
     } catch (error) {
@@ -105,7 +130,7 @@ const ReviewCard = (props) => {
       <div className="user-details row">
 
         
-                    {props.userType==2 && (
+                    {props.userType===2 && (
                 <div className="col-md-12">
                     <div className="d-flex justify-content-end">
                     
@@ -128,11 +153,13 @@ const ReviewCard = (props) => {
           <div className="d-flex">
             
             <div className="user-pfp me-2">
+            <Link to={`/profile/${userID}`}>
                 <img
                     src={props.userProfilePic}
                     alt=""
                     style={{ borderRadius: '50%', width: '70px', height: '70px' }}
                 />
+                </Link>
                 </div>
 
             
@@ -163,30 +190,55 @@ const ReviewCard = (props) => {
     
                     <div className="d-flex mt-3">
                 <img src={happy} alt="" />
-                <button
-        type="button"
-        className={`btn btn-outline-success btn-sm d-flex gap-2 mt-1 happy ${props.hasLiked ? 'liked' : 'unliked'}`}
-        style={{ marginLeft: '4px', marginRight: '15px' }}
-        disabled={props.userType === 1 || props.userType === 2 || props.userType === 4}
-        onClick={handleLike}
-      >
-        {likes}
-      </button>
+                {likedUsers.includes(props.currentUser) ? (
+        <button
+          type="button"
+          className="btn btn-success btn-sm d-flex gap-2 mt-1 sad liked"
+          style={{ marginLeft: '4px', marginRight: '15px' }}
+          disabled={props.userType === 1 || props.userType === 2 || props.userType === 4 || dislikedUsers.includes(props.currentUser)}
+          onClick={handleLike}
+        >
+          {likes}
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="btn btn-outline-success btn-sm d-flex gap-2 mt-1 sad unliked"
+          style={{ marginLeft: '4px', marginRight: '15px' }}
+          disabled={props.userType === 1 || props.userType === 2 || props.userType === 4 || dislikedUsers.includes(props.currentUser) }
+          onClick={handleLike}
+        >
+          {likes}
+        </button>
+      )}
 
       <img src={sad} alt="" />
-      <button
-        type="button"
-        className={`btn btn-outline-danger btn-sm d-flex gap-2 mt-1 sad ${props.hasDisliked ? 'liked' : 'unliked'}`}
-        style={{ marginLeft: '4px', marginRight: '15px' }}
-        disabled={props.userType === 1 || props.userType === 2 || props.userType === 4}
-        onClick={handleDislike}
-      >
-        {dislikes}
-      </button>
+      {dislikedUsers.includes(props.currentUser) ? (
+        <button
+          type="button"
+          className="btn btn-danger btn-sm d-flex gap-2 mt-1 sad liked"
+          style={{ marginLeft: '4px', marginRight: '15px' }}
+          disabled={props.userType === 1 || props.userType === 2 || props.userType === 4 || likedUsers.includes(props.currentUser)}
+          onClick={handleDislike}
+        >
+          {dislikes}
+        </button>
+      ) : (
+        <button
+          type="button"
+          className="btn btn-outline-danger btn-sm d-flex gap-2 mt-1 sad unliked"
+          style={{ marginLeft: '4px', marginRight: '15px' }}
+          disabled={props.userType === 1 || props.userType === 2 || props.userType === 4 || likedUsers.includes(props.currentUser) }
+          onClick={handleDislike}
+        >
+          {dislikes}
+        </button>
+      )}
+
                 
                 <AttachmentsModal filename={props.filename}/>
       
-                    {props.userType==4 && props.hasOwnerResponse==false && (
+                    {props.userType===4 && props.hasOwnerResponse===false && (
                 <div className="d-flex justify-content-end">
                 <ResponseModal restoID={props.restoID} reviewID={props.reviewID}/>
          
@@ -217,7 +269,7 @@ const ReviewCard = (props) => {
                 <div className="container-fluid review-content p-3 bg-light mb-2">
                   <div className="col-md-12">
 
-                  {props.userType==4 && (
+                  {props.userType===4 && (
                         <div className="d-flex justify-content-end ">
                         <EditResponseModal restoID={props.restoID} reviewID={props.reviewID}/>
                   
